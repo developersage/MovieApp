@@ -134,5 +134,9 @@ dependencies {
 }
 
 kapt {
-    correctErrorTypes = true
+    correctErrorTypes true
+}
+
+hilt {
+    enableAggregatingTask true
 }
