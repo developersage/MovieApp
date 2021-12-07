@@ -1,9 +1,7 @@
 package com.example.movieapp.di
 
 import android.content.Context
-import android.view.LayoutInflater
 import androidx.room.Room
-import com.example.movieapp.databinding.ActivityMainBinding
 import com.example.movieapp.repo.MovieRepo
 import com.example.movieapp.repo.local.MovieDao
 import com.example.movieapp.repo.local.MovieDatabase
@@ -46,7 +44,4 @@ object MovieModule {
     fun provideMovieRepo(remote: MovieService, local: MovieDao
     ): MovieRepo = MovieRepo(remote, local)
 
-    @Provides
-    fun provideBinding(@ApplicationContext appContext: Context) =
-        ActivityMainBinding.inflate(LayoutInflater.from(appContext))
 }

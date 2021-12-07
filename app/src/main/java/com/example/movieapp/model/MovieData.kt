@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.movieapp.util.Constants
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -21,7 +22,8 @@ data class MovieData (
             id = movie.id,
             title = movie.title,
             overview = movie.overview,
-            posterPath = movie.posterPath,
+            posterPath = Constants.BASE_URL_MOVIE_API +
+                    movie.posterPath.drop(1),
             releaseDate = movie.releaseDate,
             voteAverage = movie.voteAverage
         )

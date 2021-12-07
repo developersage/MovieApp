@@ -37,7 +37,6 @@ android {
         kotlinCompilerExtensionVersion '1.0.5'
     }
     buildFeatures {
-        viewBinding true
         compose true
     }
 }
@@ -78,10 +77,6 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
-    // Image Loading
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    kapt 'com.github.bumptech.glide:compiler:4.12.0'
-
     // Data Store for User Preference
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -108,7 +103,7 @@ dependencies {
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation("androidx.compose.foundation:foundation:1.0.5")
     // Material Design
-    implementation("androidx.compose.material:material:1.0.5")
+    implementation "androidx.compose.material3:material3:1.0.0-alpha02"
     // Material design icons
     implementation("androidx.compose.material:material-icons-core:1.0.5")
     implementation("androidx.compose.material:material-icons-extended:1.0.5")
@@ -125,6 +120,10 @@ dependencies {
     implementation "com.google.android.material:compose-theme-adapter:1.1.1"
     // Navigate
     implementation("androidx.navigation:navigation-compose:2.4.0-beta02")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-beta01")
+    // Image rendering
+    implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

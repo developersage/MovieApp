@@ -7,6 +7,7 @@ import com.example.movieapp.model.MovieData
 import com.example.movieapp.repo.local.MovieDao
 import com.example.movieapp.repo.remote.MovieService
 import com.example.movieapp.util.Constants
+import com.example.movieapp.util.logMe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -15,10 +16,15 @@ import javax.inject.Inject
 class MovieRepo @Inject constructor(private val service: MovieService, private val dao: MovieDao) {
 
     suspend fun getTopRated() = service.getTopRated(
-        R.string.api_key.toString(), null, null
+        "8015b18728cc0dc36dcc87779e3697a9", null, null
     ).also {
         if (it.isSuccessful && it.body() != null){
+            "getTopRated() call success.".logMe()
+            deleteAll()
             loadAll(it.body()?.results!!)
+        } else {
+            "getTopRated() call failed.".logMe()
+            it.toString().logMe()
         }
     }
 
@@ -29,6 +35,12 @@ class MovieRepo @Inject constructor(private val service: MovieService, private v
             dao.insertAll(movies.map {
                 MovieData.convertFromAPI(it)
             })
+        }
+    }
+
+    private suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            dao.deleteAll()
         }
     }
 

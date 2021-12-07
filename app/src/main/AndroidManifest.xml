@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_movieapp_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieApp.Starting"
+        android:usesCleartextTraffic="true"
         android:fullBackupContent="true">
         <activity
             android:theme="@style/Theme.MovieApp.Starting"
