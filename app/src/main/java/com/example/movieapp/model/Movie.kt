@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class Movie(
     val adult: Boolean,
     @Json(name = "backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String?,
     @Json(name = "genre_ids")
     val genreIds: List<Int>,
     val id: Int,
@@ -21,7 +21,7 @@ data class Movie(
     val overview: String,
     val popularity: String,
     @Json(name = "poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @Json(name = "release_date")
     val releaseDate: String,
     val title: String,
@@ -34,7 +34,7 @@ data class Movie(
 ): Parcelable
 
 @JsonClass(generateAdapter = true)
-data class TopRated(
+data class RequestResult(
     val page: Int,
     val results: List<Movie>,
     @Json(name = "total_pages")

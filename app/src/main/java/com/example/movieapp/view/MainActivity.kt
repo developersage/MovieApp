@@ -1,40 +1,33 @@
 package com.example.movieapp.view
 
 import android.app.Application
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
-import com.example.movieapp.model.MovieData
-import com.example.movieapp.util.ViewState
-import com.example.movieapp.viewmodel.MovieViewModel
+import com.example.movieapp.util.MovieDetailNavKey
+import com.example.movieapp.util.Routes
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MovieViewModel by viewModels()
-    private lateinit var app: Application
-
+    @ExperimentalAnimationApi
+    @ExperimentalCoilApi
     @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -46,70 +39,77 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MaterialTheme {
-                MainLayout(viewModel = viewModel)
+                MainLayout()
             }
         }
     }
 
+    @ExperimentalAnimationApi
+    @ExperimentalCoilApi
     @ExperimentalMaterial3Api
     @Composable
-    fun MainLayout(viewModel: MovieViewModel){
-        Scaffold { pval ->
-            val movies by viewModel.movieList.observeAsState()
-
-            if (!movies.isNullOrEmpty()){
-                MovieList(movies = movies!!, paddingValues = pval)
-            }
-            SetUpButtonFetchTopRated()
-        }
-    }
-
-    @Composable
-    fun SetUpButtonFetchTopRated() {
-        val fetch by viewModel.viewState.observeAsState()
-        Button(onClick = {
-            viewModel.fetchTopRated()
-            when (fetch){
-                is ViewState.Loading -> {}
-                is ViewState.Error -> {}
-                is ViewState.Success -> {
-                    Toast.makeText(application , "Success", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }) {
-            Text(text = "Fetch All")
-        }
-    }
-
-    @Composable
-    fun MovieList(movies: List<MovieData>, paddingValues: PaddingValues) {
-        LazyColumn(
-            contentPadding = paddingValues
-        ) {
-            items(movies) { movie ->
-                ItemRow(movie)
-            }
+    fun MainLayout() {
+        Scaffold(
+            topBar = { SetUpTopBar() },
+        ) { padVal ->
+            Navigation(padVal = padVal)
         }
     }
 
     @ExperimentalCoilApi
+    @ExperimentalAnimationApi
     @Composable
-    fun ItemRow(item: MovieData) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(64.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = rememberImagePainter(data = item.posterPath),
-                contentDescription = item.title,
-                modifier = Modifier.size(200.dp)
-            )
-            Text(text = item.overview)
-            Text(text = item.releaseDate)
+    fun Navigation(padVal: PaddingValues) {
+
+        val navController = rememberAnimatedNavController()
+        AnimatedNavHost(navController, startDestination = Routes.MovieList.route) {
+
+            composable(
+                Routes.MovieList.route,
+                enterTransition = {
+                    this.slideIntoContainer(
+                        towards = AnimatedContentScope.SlideDirection.Right
+                    )
+                },
+                exitTransition = {
+                    this.slideOutOfContainer(
+                        towards = AnimatedContentScope.SlideDirection.Left
+                    )
+                },
+            ) { MovieListDestination(navController, padVal) }
+
+            composable(
+                Routes.MovieDetail.route,
+                enterTransition = {
+                    this.slideIntoContainer(
+                        towards = AnimatedContentScope.SlideDirection.Left
+                    )
+                },
+                exitTransition = {
+                    this.slideOutOfContainer(
+                        towards = AnimatedContentScope.SlideDirection.Right
+                    )
+                },
+                arguments = listOf(navArgument(MovieDetailNavKey.MOVIE_ID) {
+                    type = NavType.IntType
+                })
+            ) { backStackEntry ->
+                backStackEntry.arguments?.getInt(MovieDetailNavKey.MOVIE_ID)?.let {
+                    MovieDetailDestination(it, padVal)
+                }
+            }
         }
+
     }
+
+    @Composable
+    fun SetUpTopBar() {
+        MediumTopAppBar(
+            title = { Text("Movie App") },
+            colors = mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        )
+    }
+
 
 }
 
