@@ -78,7 +78,7 @@ fun MovieList(
     searchQuery: (String) -> Unit,
     fetchTopRated: () -> Unit
 ) {
-    Column() {
+    Column {
         SearchBar(searchQuery, fetchTopRated, paddingValues)
         LazyColumn(
             modifier = Modifier.wrapContentHeight(),

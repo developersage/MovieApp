@@ -18,9 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieViewModel @Inject constructor(private val repo: MovieRepo) : ViewModel() {
 
-    private val _movie = MutableLiveData<MovieData>()
-    val movie: LiveData<MovieData> get() = _movie
-
     private val _viewState = MutableLiveData<ViewState<List<MovieData>>>()
     val viewState: LiveData<ViewState<List<MovieData>>> get() = _viewState
 
